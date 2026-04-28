@@ -1,58 +1,118 @@
 # Ex.No:1a  			Study of Socket Programming
 
 ## Aim: 
-To perform a study on Socket Programming
+To implement the study on Socket Programming using Jupiter Notebook
 ## Introduction:
-
- 	Socket programming is a crucial aspect of network communication, allowing for data exchange between computers over a network. It forms the backbone of various networked applications, enabling communication between clients and servers. This study explores the fundamental concepts of socket programming, its use cases, and provides a practical example to demonstrate its implementation.
+     Socket programming enables communication between computers over a network using client–server architecture. It allows data exchange through sockets, which act as endpoints identified by IP address and port number.
 ## Understanding Socket Programming:
-	Socket programming involves the use of sockets, which serve as endpoints for communication. A socket is identified by an IP address and a port number, and it facilitates data transfer between a client and a server. The two main types of sockets are Stream Sockets, which provide a reliable, connection-oriented communication, and Datagram Sockets, which are connectionless and suitable for scenarios where reliability is less critical.
+     Socket programming uses sockets, identified by an IP address and port number, to enable communication between a client and a server. It mainly includes stream sockets, which are reliable and connection-oriented, and datagram sockets, which are connectionless and faster but less reliable.
 ## Key Concepts in Socket Programming:
-1.Sockets
-•	A socket is a software representation of a communication endpoint in a network.
-•	It is identified by an IP address and a port number.
-•	Sockets can be classified into two main types: Stream Sockets and Datagram Sockets.
-•	Stream Sockets provide a reliable, connection-oriented communication, while Datagram Sockets are connectionless and operate in a best-effort mode.
-
-2. Client-Server Model
-
-•	Socket programming typically follows the client-server model.
-•	The server listens for incoming connections from clients, while clients initiate connections to the server.
-•	Servers are passive, waiting for connection requests, and clients are active, initiating communication.
-
-3, TCP/IP Protocol:
-
-•	Transmission Control Protocol (TCP) and Internet Protocol (IP) are the foundational protocols for socket programming.
-•	TCP provides reliable, connection-oriented communication, ensuring data integrity and order.
-•	IP facilitates the routing of data between devices in a network.
-
-4.Basic Socket Functions:
-
-•	Socket programming involves a set of functions provided by the operating system or programming language to create, bind, listen, accept, connect, send, and receive data through sockets.
-•	Examples of functions include socket(), bind(), listen(), accept(), connect(), send(), and recv().
+1. Sockets:
+     A socket is a communication endpoint identified by an IP address and port number. It is of two types: stream sockets (reliable, connection-oriented) and datagram sockets (connectionless, best-effort).
+2. Client–Server Model:
+     Socket programming follows a client-server model where the server waits for connections and the client initiates communication.
+3. TCP/IP Protocol:
+     TCP ensures reliable and ordered data transmission, while IP handles routing of data between devices.
+4. Basic Socket Functions:
+     Common functions include socket(), bind(), listen(), accept(), connect(), send(), and recv() for communication.
 
 ## Server-Side Operations:
-
 •	Servers create a socket using socket() and bind it to a specific IP address and port using bind().
 •	They then listen for incoming connections with listen() and accept connections with accept().
 •	Once a connection is establi
 •	shed, servers can send and receive data using send() and recv().
 
 ## Client –Server Operations
-
-Clients create a socket using socket() and connect to a server using connect().
-After establishing a connection, clients can send and receive data using send() and recv().
+    1. Clients create a socket using socket() and connect to a server using connect().
+    2. After establishing a connection, clients can send and receive data using send() and recv().
 
 ## Use Cases of Socket Programming:
-Socket programming finds applications in various domains, including web development, file transfer protocols, online gaming, and real-time communication. It is the foundation for protocols like HTTP, FTP, and SMTP, which power the internet. Socket programming enables the development of both server and client applications, facilitating the exchange of information between devices in a networked environment.
+     Socket programming is widely used in web development, file transfer, online gaming, and real-time communication. It forms the basis of protocols like HTTP, FTP, and SMTP, enabling data exchange between client and server systems over a network.
 ## Example Use Cases:
+     1.Web Servers: Use sockets to handle HTTP requests and send web pages.
+     2.Chat Applications: Enable real-time messaging between users.
+     3.File Transfer: Used in protocols like FTP for sending files.
+     4.Online Games: Support communication between players and servers.
+     5.RPC: Allows execution of code on remote systems using sockets.
+~~~
+import socket
+import threading
+import time
 
-1.	Web servers: Web servers use socket programming to handle incoming HTTP requests from clients, serving web pages and content.
-2.	Chat Application: Instant messaging and chat applications use sockets to enable real-time communication between users.
-3.	File Transfer Protocol: Protocols like FTP (File Transfer Protocol) utilize socket programming for transferring files between a client and a server.
-4.	Networked Games: Online multiplayer games rely on socket programming to facilitate communication between game clients and servers.
-5.	RPC mechanisms: which allow processes to execute code on a remote server, often use socket programming for communication.
+HOST = '127.0.0.1'
+PORT = 9002   # new port
 
+# ---------------- SERVER ----------------
+def server():
+    s = socket.socket()
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind((HOST, PORT))
+    s.listen(1)
+
+    print("Saveetha Engineering College Server is starting...")
+    conn, addr = s.accept()
+    print("Connected to client:", addr)
+
+    messages = [
+        "Good morning. Welcome to Saveetha Engineering College.",
+        "May I know which program you are interested in?",
+        "We offer undergraduate programs such as Computer Science, Information Technology, and Electronics.",
+        "You can apply through our official admission portal.",
+        "Thank you for contacting Saveetha Engineering College. Have a good day."
+    ]
+
+    for msg in messages:
+        conn.send(msg.encode())
+        time.sleep(1)
+
+        reply = conn.recv(1024).decode()
+        print("Client:", reply)
+
+    conn.close()
+    print("Server closed")
+
+
+# ---------------- CLIENT ----------------
+def client():
+    time.sleep(1)
+
+    s = socket.socket()
+    s.connect((HOST, PORT))
+    print("Client connected to server")
+
+    replies = [
+        "Good morning.",
+        "I am interested in the Computer Science program.",
+        "That sounds informative. Thank you.",
+        "Could you please guide me on the application process?",
+        "Thank you for your assistance."
+    ]
+
+    for reply in replies:
+        data = s.recv(1024).decode()
+        print("Server:", data)
+
+        s.send(reply.encode())
+        time.sleep(1)
+
+    s.close()
+    print("Client closed")
+
+
+# ---------------- THREADS ----------------
+t1 = threading.Thread(target=server)
+t2 = threading.Thread(target=client)
+
+t1.start()
+t2.start()
+
+t1.join()
+t2.join()
+
+print("Conversation completed successfully.")
+~~~
+## Output:
+<img width="1113" height="361" alt="1a" src="https://github.com/user-attachments/assets/1c9a397d-0655-4e81-b72f-85745f1e5863" />
 
 ## Result:
 Thus the study of Socket Programming Completed Successfully
